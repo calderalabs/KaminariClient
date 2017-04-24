@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, Text, View, TouchableOpacity, Modal, StyleSheet } from 'react-native'
+import { ScrollView, Text, View, TouchableOpacity, Modal, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import Metrics from '../Metrics'
 
 class DocumentDetails extends React.Component {
@@ -33,12 +33,12 @@ class DocumentDetails extends React.Component {
           visible={this.state.modalVisible}
         >
           <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback onPress={() => { this.setModalVisible(!this.state.modalVisible) }}>
+              <View style={styles.overlay} />
+            </TouchableWithoutFeedback>
+
             <View style={styles.modal}>
               <Text>Hello World!</Text>
-
-              <TouchableOpacity onPress={() => { this.setModalVisible(!this.state.modalVisible) }}>
-                <Text>Hide Modal</Text>
-              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -69,13 +69,16 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-end'
+    flexDirection: 'column'
   },
   modal: {
-    height: 300,
-    width: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: 100
+  },
+  overlay: {
+    flexGrow: 1
   }
 })
 
