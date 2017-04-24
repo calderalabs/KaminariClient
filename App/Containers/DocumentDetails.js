@@ -7,24 +7,39 @@ class DocumentDetails extends React.Component {
     super(props)
 
     this.state = {
-      modalVisible: false
+      modalVisible: false,
+      word: {
+        base: null,
+        read: null
+      }
     }
   }
 
-  setModalVisible = (visible) => {
-    this.setState({ modalVisible: visible });
+  openModal = (word) => {
+    this.setState({ modalVisible: true, word: word })
+  }
+
+  closeModal = () => {
+    this.setState({ modalVisible: false })
   }
 
   render () {
     return (
       <ScrollView style={styles.container}>
         <View style={styles.detailsContent}>
-          <Text style={styles.title}>{this.props.document.title}</Text>
-          {this.props.document.body.map((paragraph) => (
-            <TouchableOpacity key={paragraph} onPress={() => { this.setModalVisible(true) }}>
-              <Text style={styles.paragraph}>{paragraph}</Text>
-            </TouchableOpacity>
-          ))}
+          <Text style={styles.title}>
+            {this.props.document.title.map((titlePart) => (
+              titlePart.base
+            ))}
+          </Text>
+
+          <View style={styles.paragraph}>
+            {this.props.document.body.map((word, i) => (
+              <TouchableOpacity key={i} onPress={() => { this.openModal(word) }}>
+                <Text style={styles.word}>{word.base}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
 
         <Modal
@@ -33,12 +48,13 @@ class DocumentDetails extends React.Component {
           visible={this.state.modalVisible}
         >
           <View style={styles.modalContainer}>
-            <TouchableWithoutFeedback onPress={() => { this.setModalVisible(!this.state.modalVisible) }}>
+            <TouchableWithoutFeedback onPress={() => { this.closeModal() }}>
               <View style={styles.overlay} />
             </TouchableWithoutFeedback>
 
             <View style={styles.modal}>
-              <Text>Hello World!</Text>
+              <Text>{this.state.word.base}</Text>
+              <Text>{this.state.word.read}</Text>
             </View>
           </View>
         </Modal>
@@ -56,10 +72,9 @@ const styles = StyleSheet.create({
     padding: 15,
     flex: 1
   },
-  paragraph: {
-    marginBottom: Metrics.baseMargin,
+  word: {
     lineHeight: 30,
-    fontSize: 18
+    fontSize: 24
   },
   title: {
     fontSize: 25,
@@ -79,6 +94,10 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flexGrow: 1
+  },
+  paragraph: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   }
 })
 
